@@ -2,6 +2,10 @@
 - name: Install debconf to set preseed info
   apt: pkg=debconf-utils
 
+- name: Generate random PhpMyAdmin root password
+  command: openssl rand -base64 18
+  register: randompass
+
 - name: Set preseed info
   shell: echo 'phpmyadmin phpmyadmin/dbconfig-install boolean true' | debconf-set-selections && echo 'phpmyadmin phpmyadmin/app-password-confirm password ' | debconf-set-selections && echo 'phpmyadmin phpmyadmin/mysql/admin-pass password {{randompass.stdout}}' | debconf-set-selections && echo 'phpmyadmin phpmyadmin/mysql/app-pass password ' | debconf-set-selections && echo 'phpmyadmin phpmyadmin/reconfigure-webserver multiselect ' | debconf-set-selections
 
